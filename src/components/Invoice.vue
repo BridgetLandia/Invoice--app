@@ -3,7 +3,7 @@
     <v-card color="#f5eee8">
       <div>
         <h1 id="main_title">Invoice App</h1>
-        <h3 id="subtitle">InvoiceTea for your invoice Team</h3>
+        <h3 id="subtitle">InvoiceTea for your Invoice Team</h3>
       </div>
       <v-form d-flex>
         <v-card class="ma-12 pa-16" raised elevation="12">
@@ -14,43 +14,164 @@
             <v-col md="4">
               <h3>FROM:</h3>
               <label for="Businesss Name">Businesss Name</label>
-              <v-text-field label="Solo" placeholder="Business Name" solo></v-text-field>
+              <v-text-field
+                label="Solo"
+                type="text"
+                v-model.trim="businessName"
+                placeholder="Business Name"
+                solo
+              ></v-text-field>
               <label for="Tax Number">Tax Number</label>
-              <v-text-field label="Solo" placeholder="Tax Number" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="from_taxnumber"
+                placeholder="Tax Number"
+                solo
+              ></v-text-field>
               <label for="Address Line 1">Address Line 1</label>
-              <v-text-field label="Solo" placeholder="Address Line 1" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="from_address1"
+                placeholder="Address Line 1"
+                solo
+              ></v-text-field>
               <label for="Address Line 2">Address Line 2</label>
-              <v-text-field label="Solo" placeholder="Address Line 2" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="from_address2"
+                placeholder="Address Line 2"
+                solo
+              ></v-text-field>
               <label for="City">City</label>
-              <v-text-field label="Solo" placeholder="City" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="from_city"
+                placeholder="City"
+                solo
+              ></v-text-field>
               <label for="Postcode">PostCode</label>
-              <v-text-field label="Solo" placeholder="Postcode" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="from_postcode"
+                placeholder="Postcode"
+                solo
+              ></v-text-field>
             </v-col>
             <v-col md="4">
               <h3>TO:</h3>
               <label for="Businesss Name">Businesss Name</label>
-              <v-text-field label="Solo" placeholder="Business Name" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="clientName"
+                placeholder="Business Name"
+                solo
+              ></v-text-field>
               <label for="Tax Number">Tax Number</label>
-              <v-text-field label="Solo" placeholder="Tax Number" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="client_taxnumber"
+                placeholder="Tax Number"
+                solo
+              ></v-text-field>
               <label for="Address Line 1">Address Line 1</label>
-              <v-text-field label="Solo" placeholder="Address Line 1" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="client_address1"
+                placeholder="Address Line 1"
+                solo
+              ></v-text-field>
               <label for="Address Line 2">Address Line 2</label>
-              <v-text-field label="Solo" placeholder="Address Line 2" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="client_address2"
+                placeholder="Address Line 2"
+                solo
+              ></v-text-field>
               <label for="City">City</label>
-              <v-text-field label="Solo" placeholder="City" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="client_city"
+                placeholder="City"
+                solo
+              ></v-text-field>
               <label for="Postcode">PostCode</label>
-              <v-text-field label="Solo" placeholder="Postcode" solo></v-text-field>
+              <v-text-field
+                type="text"
+                label="Solo"
+                v-model.trim="client_postcode"
+                placeholder="Postcode"
+                solo
+              ></v-text-field>
             </v-col>
             <v-col md="4">
               <h3>Details:</h3>
               <label for="Invoice Number">Invoice Number</label>
-              <v-text-field label="Solo" placeholder="Invoice Number" solo></v-text-field>
+              <v-text-field
+                label="Solo"
+                v-model.trim="invoice_id"
+                placeholder="Invoice Number"
+                solo
+              ></v-text-field>
               <label for="Issue Date">Issue Date</label>
-              <v-text-field label="Solo" placeholder="Issue Date" solo></v-text-field>
+              <v-menu
+                ref="menu1"
+                v-model="menu1"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dateFormatted"
+                    solo
+                    label="Date"
+                    hint="MM/DD/YYYY format"
+                    persistent-hint
+                    v-bind="attrs"
+                    @blur="date = parseDate(dateFormatted)"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+              </v-menu>
               <label for="Issue Date">Purchase Order Number</label>
-              <v-text-field label="Solo" placeholder="PO Number" solo></v-text-field>
+              <v-text-field label="Solo" v-model.trim="purchase_order" placeholder="PO Number" solo></v-text-field>
               <label for="Due Date">Due Date</label>
-              <v-text-field label="Solo" placeholder="Due Date" solo></v-text-field>
+              <v-menu
+                ref="menu1"
+                v-model="menu2"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dateFormatted"
+                    solo
+                    label="Date"
+                    hint="MM/DD/YYYY format"
+                    persistent-hint
+                    v-bind="attrs"
+                    @blur="date = parseDate(dateFormatted)"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
           <v-row>
@@ -71,27 +192,29 @@
                 <tr v-for="(item, index) in items" :key="index">
                   <td>{{ index +1 }}</td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Description" solo></v-text-field>
+                    <v-text-field label="Solo" placeholder="Description" solo>{{item.description}}</v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Qty" solo></v-text-field>
+                    <v-text-field label="Solo" placeholder="Qty" solo>{{item.qty}}</v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Price" solo></v-text-field>
+                    <v-text-field label="Solo" placeholder="Price" solo>{{item.price}}</v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Discount" solo></v-text-field>
+                    <v-text-field label="Solo" placeholder="Discount" solo>{{item.discount_amount}}</v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Tax" solo></v-text-field>
+                    <v-text-field label="Solo" placeholder="Tax" solo>{{item.tax_amount}}</v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Total" solo></v-text-field>
+                    <v-text-field label="Solo" placeholder="Total" solo>{{item.total}}</v-text-field>
                   </td>
                   <td>
-                    <v-btn small color="primary">Add</v-btn>
-                    <v-btn small color="primary">Remove</v-btn>
+                    <v-btn small color="primary" @click="removeItem(index)">Remove</v-btn>
                   </td>
+                </tr>
+                <tr>
+                  <v-btn small color="primary" @click="addItem(index)">Add</v-btn>
                 </tr>
                 <tr>
                   <td>Discount:</td>
@@ -125,6 +248,60 @@
         </v-card>
       </v-form>
     </v-card>
+    <v-card>
+      <v-row>
+        <v-col md="12">
+          <h3>Items:</h3>
+          <thead>
+            <tr>
+              <th class="text-left">No.</th>
+              <th class="text-left">Desciption</th>
+              <th class="text-left">Qty</th>
+              <th class="text-left">Price</th>
+              <th class="text-left">Discount</th>
+              <th class="text-left">Tax</th>
+              <th class="text-left">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in items" :key="index">
+              <td>{{ index +1 }}</td>
+              <td>
+                <v-text-field label="Solo" placeholder="Description" solo>{{item.description}}</v-text-field>
+              </td>
+              <td>
+                <v-text-field label="Solo" placeholder="Qty" solo>{{item.qty}}</v-text-field>
+              </td>
+              <td>
+                <v-text-field label="Solo" placeholder="Price" solo>{{item.price}}</v-text-field>
+              </td>
+              <td>
+                <v-text-field label="Solo" placeholder="Discount" solo>{{item.discount_amount}}</v-text-field>
+              </td>
+              <td>
+                <v-text-field label="Solo" placeholder="Tax" solo>{{item.tax_amount}}</v-text-field>
+              </td>
+              <td>
+                <v-text-field label="Solo" placeholder="Total" solo>{{item.total}}</v-text-field>
+              </td>
+              <td>
+                <v-btn small color="primary">Add</v-btn>
+                <v-btn small color="primary">Remove</v-btn>
+              </td>
+            </tr>
+            <tr>
+              <td>Discount:</td>
+            </tr>
+            <tr>
+              <td>Tax:</td>
+            </tr>
+            <tr>
+              <td>Total:</td>
+            </tr>
+          </tbody>
+        </v-col>
+      </v-row>
+    </v-card>
   </div>
 </template>
 
@@ -134,31 +311,78 @@ export default {
   data() {
     return {
       businessName: "",
+      from_taxnumber: "",
       from_address1: "",
       from_address2: "",
       from_city: "",
       from_postcode: "",
       clientName: "",
+      client_taxnumber: "",
       client_address1: "",
       client_address2: "",
       client_city: "",
       client_postcode: "",
       invoice_id: "",
       invoice_date: "",
+      purchase_order: "",
       invoice_due: "",
       items: [
         {
           description: "",
           qty: "",
           price: "",
-          discount: "",
-          tax: "",
-          discount_amount: "",
-          tax_amount: "",
-          total: "",
+          discount_amount: 0,
+          tax_amount: 0,
+          total: 0,
         },
       ],
+      taxtotal: 0,
+      total: 0,
+      bank_name: "",
+      bank_account: "",
+      swift_code: "",
+      invoice_notes: "",
+      date: new Date().toISOString().substr(0, 10),
+      dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
+      menu1: false,
+      menu2: false,
     };
+  },
+  methods: {
+    addItem(index) {
+      this.items.splice(index + 1, 0, {
+        description: "",
+        qty: "",
+        price: "",
+        discount_amount: 0,
+        tax_amount: 0,
+        total: 0,
+      });
+    },
+    removeItem(index) {
+      this.items.splice(index, 1);
+    },
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${month}/${day}/${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
+  },
+  computed: {
+    computedDateFormatted() {
+      return this.formatDate(this.date);
+    },
+  },
+  watch: {
+    date() {
+      this.dateFormatted = this.formatDate(this.date);
+    },
   },
 };
 </script>
