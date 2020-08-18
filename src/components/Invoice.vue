@@ -13,7 +13,7 @@
           <v-row justify="center">
             <v-col md="4">
               <h3>FROM:</h3>
-              <label for="Businesss Name">Businesss Name</label>
+              <label for="Businesss Name">Business Name</label>
               <v-text-field
                 label="Solo"
                 type="text"
@@ -64,7 +64,7 @@
             </v-col>
             <v-col md="4">
               <h3>TO:</h3>
-              <label for="Businesss Name">Businesss Name</label>
+              <label for="Businesss Name">Business Name</label>
               <v-text-field
                 type="text"
                 label="Solo"
@@ -174,6 +174,7 @@
               </v-menu>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col md="12">
               <h3>Items:</h3>
@@ -192,22 +193,43 @@
                 <tr v-for="(item, index) in items" :key="index">
                   <td>{{ index +1 }}</td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Description" solo>{{item.description}}</v-text-field>
+                    <v-text-field
+                      label="Solo"
+                      placeholder="Description"
+                      v-model="item.description"
+                      solo
+                    ></v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Qty" solo>{{item.qty}}</v-text-field>
+                    <v-text-field label="Solo" placeholder="Qty" v-model.number="item.qty" solo></v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Price" solo>{{item.price}}</v-text-field>
+                    <v-text-field label="Solo" placeholder="Price" v-model.number="item.price" solo></v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Discount" solo>{{item.discount_amount}}</v-text-field>
+                    <v-text-field
+                      label="Solo"
+                      placeholder="Discount"
+                      v-model.number="item.discount_amount"
+                      solo
+                    ></v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Tax" solo>{{item.tax_amount}}</v-text-field>
+                    <v-text-field
+                      label="Solo"
+                      placeholder="Tax"
+                      v-model.number="item.tax_amount"
+                      solo
+                    ></v-text-field>
                   </td>
                   <td>
-                    <v-text-field label="Solo" placeholder="Total" solo>{{item.total}}</v-text-field>
+                    <v-text-field
+                      label="Solo"
+                      placeholder="Total"
+                      :value="item.total"
+                      readonly="true"
+                      solo
+                    ></v-text-field>
                   </td>
                   <td>
                     <v-btn small color="primary" @click="removeItem(index)">Remove</v-btn>
@@ -232,23 +254,61 @@
             <v-col md="4">
               <h3>Bank Information:</h3>
               <label for="Invoice Number">Bank Name</label>
-              <v-text-field label="Solo" placeholder="Bank Name" solo></v-text-field>
+              <v-text-field label="Solo" placeholder="Bank Name" v-model="bank_name" solo></v-text-field>
               <label for="Issue Date">Account number</label>
-              <v-text-field label="Solo" placeholder="02213425" solo></v-text-field>
+              <v-text-field label="Solo" placeholder="02213425" v-model="bank_account" solo></v-text-field>
               <label for="Due Date">SWIFT Code</label>
-              <v-text-field label="Solo" placeholder="SWIFT" solo></v-text-field>
+              <v-text-field label="Solo" placeholder="SWIFT" v-model="swift_code" solo></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <label for="Invoice Notes">Invoice Notes</label>
-              <v-textarea solo name="input-7-4" label="Solo textarea"></v-textarea>
+              <v-textarea solo name="input-7-4" v-model="invoice_notes" label="Solo textarea"></v-textarea>
             </v-col>
           </v-row>
         </v-card>
       </v-form>
     </v-card>
-    <v-card>
+    <!-- Invoice Template -->
+    <v-card class="ma-12 pa-16">
+      <v-row justify="center">
+        <v-col md="4">
+          <h3>FROM:</h3>
+          <label for="Businesss Name">Business Name</label>
+          <div>{{businessName}}</div>
+          <label for="Tax Number">Tax Number</label>
+          <div>{{from_taxnumber}}</div>
+          <label for="Address Line 1">Address Line 1</label>
+          <div>{{from_address1}}</div>
+          <label for="Address Line 2">Address Line 2</label>
+          <div>{{from_address2}}</div>
+          <label for="City">City</label>
+          <div>{{from_city}}</div>
+          <label for="Postcode">PostCode</label>
+          <div>{{from_postcode}}</div>
+        </v-col>
+        <v-col md="4">
+          <h3>TO:</h3>
+          <label for="Businesss Name">Business Name</label>
+          <div>{{clientName}}</div>
+          <label for="Tax Number">Tax Number</label>
+          <div>{{client_taxnumber}}</div>
+          <label for="Address Line 1">Address Line 1</label>
+          <div>{{client_address1}}</div>
+          <label for="Address Line 2">Address Line 2</label>
+          <div>{{client_address2}}</div>
+          <label for="City">City</label>
+          <div>{{client_city}}</div>
+          <label for="Postcode">PostCode</label>
+          <div>{{client_postcode}}</div>
+        </v-col>
+        <v-col md="4">
+          <h3>Details:</h3>
+          <label for="Invoice Number">Invoice Number</label>
+          <v-text-field label="Solo" v-model.trim="invoice_id" placeholder="Invoice Number" solo></v-text-field>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col md="12">
           <h3>Items:</h3>
@@ -266,28 +326,12 @@
           <tbody>
             <tr v-for="(item, index) in items" :key="index">
               <td>{{ index +1 }}</td>
-              <td>
-                <v-text-field label="Solo" placeholder="Description" solo>{{item.description}}</v-text-field>
-              </td>
-              <td>
-                <v-text-field label="Solo" placeholder="Qty" solo>{{item.qty}}</v-text-field>
-              </td>
-              <td>
-                <v-text-field label="Solo" placeholder="Price" solo>{{item.price}}</v-text-field>
-              </td>
-              <td>
-                <v-text-field label="Solo" placeholder="Discount" solo>{{item.discount_amount}}</v-text-field>
-              </td>
-              <td>
-                <v-text-field label="Solo" placeholder="Tax" solo>{{item.tax_amount}}</v-text-field>
-              </td>
-              <td>
-                <v-text-field label="Solo" placeholder="Total" solo>{{item.total}}</v-text-field>
-              </td>
-              <td>
-                <v-btn small color="primary">Add</v-btn>
-                <v-btn small color="primary">Remove</v-btn>
-              </td>
+              <td>{{item.description}}</td>
+              <td>{{item.qty}}</td>
+              <td>{{item.price}}</td>
+              <td>{{item.discount_amount}}</td>
+              <td>{{item.tax_amount}}</td>
+              <td>{{item.total}}</td>
             </tr>
             <tr>
               <td>Discount:</td>
