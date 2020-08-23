@@ -1,10 +1,12 @@
 <template>
   <div>
-    <v-card color="#f5eee8">
-      <div>
+    <v-card v-if="!showPreview" color="#f5eee8">
+      <div id="title_container">
         <h1 id="main_title">Invoice App</h1>
-        <h3 id="subtitle">InvoiceTea for your Invoice Team</h3>
+        <img alt="logo" id="logo" src="../assets/teabag.svg" />
       </div>
+      <h3 id="subtitle">InvoiceTea for your Invoice Team</h3>
+
       <v-form d-flex>
         <v-card class="ma-12 pa-16" raised elevation="12">
           <v-row>
@@ -150,13 +152,13 @@
               <v-text-field label="Solo" v-model.trim="purchase_order" placeholder="PO Number" solo></v-text-field>
               <label for="Due Date">Due Date</label>
               <v-menu
-                ref="menu1"
-                v-model="menu2"
+                ref="menu2"
+                v-model="invoice_due"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
-                min-width="290px"
+                min-width="200px"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
@@ -170,11 +172,10 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                <v-date-picker v-model="date" no-title @input="menu2 = false"></v-date-picker>
               </v-menu>
             </v-col>
           </v-row>
-
           <v-row>
             <v-col md="12">
               <h3>Items:</h3>
@@ -232,11 +233,11 @@
                     ></v-text-field>
                   </td>
                   <td>
-                    <v-btn small color="primary" @click="removeItem(index)">Remove</v-btn>
+                    <v-btn color="primary" class="button-remove" @click="removeItem(index)">Remove</v-btn>
                   </td>
                 </tr>
                 <tr>
-                  <v-btn small color="primary" @click="addItem(index)">Add</v-btn>
+                  <v-btn small color="primary" class="button-add" @click="addItem(index)">Add</v-btn>
                 </tr>
                 <tr>
                   <td>Discount:</td>
@@ -267,85 +268,117 @@
               <v-textarea solo name="input-7-4" v-model="invoice_notes" label="Solo textarea"></v-textarea>
             </v-col>
           </v-row>
+          <v-btn @click="preview" color="primary">Preview</v-btn>
         </v-card>
       </v-form>
     </v-card>
     <!-- Invoice Template -->
-    <v-card class="ma-12 pa-16">
-      <v-row justify="center">
-        <v-col md="4">
-          <h3>FROM:</h3>
-          <label for="Businesss Name">Business Name</label>
-          <div>{{businessName}}</div>
-          <label for="Tax Number">Tax Number</label>
-          <div>{{from_taxnumber}}</div>
-          <label for="Address Line 1">Address Line 1</label>
-          <div>{{from_address1}}</div>
-          <label for="Address Line 2">Address Line 2</label>
-          <div>{{from_address2}}</div>
-          <label for="City">City</label>
-          <div>{{from_city}}</div>
-          <label for="Postcode">PostCode</label>
-          <div>{{from_postcode}}</div>
-        </v-col>
-        <v-col md="4">
-          <h3>TO:</h3>
-          <label for="Businesss Name">Business Name</label>
-          <div>{{clientName}}</div>
-          <label for="Tax Number">Tax Number</label>
-          <div>{{client_taxnumber}}</div>
-          <label for="Address Line 1">Address Line 1</label>
-          <div>{{client_address1}}</div>
-          <label for="Address Line 2">Address Line 2</label>
-          <div>{{client_address2}}</div>
-          <label for="City">City</label>
-          <div>{{client_city}}</div>
-          <label for="Postcode">PostCode</label>
-          <div>{{client_postcode}}</div>
-        </v-col>
-        <v-col md="4">
-          <h3>Details:</h3>
-          <label for="Invoice Number">Invoice Number</label>
-          <v-text-field label="Solo" v-model.trim="invoice_id" placeholder="Invoice Number" solo></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col md="12">
-          <h3>Items:</h3>
-          <thead>
-            <tr>
-              <th class="text-left">No.</th>
-              <th class="text-left">Desciption</th>
-              <th class="text-left">Qty</th>
-              <th class="text-left">Price</th>
-              <th class="text-left">Discount</th>
-              <th class="text-left">Tax</th>
-              <th class="text-left">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in items" :key="index">
-              <td>{{ index +1 }}</td>
-              <td>{{item.description}}</td>
-              <td>{{item.qty}}</td>
-              <td>{{item.price}}</td>
-              <td>{{item.discount_amount}}</td>
-              <td>{{item.tax_amount}}</td>
-              <td>{{item.total}}</td>
-            </tr>
-            <tr>
-              <td>Discount:</td>
-            </tr>
-            <tr>
-              <td>Tax:</td>
-            </tr>
-            <tr>
-              <td>Total:</td>
-            </tr>
-          </tbody>
-        </v-col>
-      </v-row>
-    </v-card>
+    <div v-else>
+      <v-card class="ma-12 pa-16">
+        <div id="invoice_template">
+          <v-row justify="center">
+            <v-col md="4">
+              <h3>FROM</h3>
+              <label class="font-weight-bold" for="Businesss Name">Business Name:</label>
+              <div>{{businessName}}</div>
+              <label class="font-weight-bold" for="Tax Number">Tax Number:</label>
+              <div>{{from_taxnumber}}</div>
+              <label class="font-weight-bold" for="Address Line 1">Address Line 1:</label>
+              <div>{{from_address1}}</div>
+              <label class="font-weight-bold" for="Address Line 2">Address Line 2:</label>
+              <div>{{from_address2}}</div>
+              <label class="font-weight-bold" for="City">City:</label>
+              <div>{{from_city}}</div>
+              <label class="font-weight-bold" for="Postcode">PostCode:</label>
+              <div>{{from_postcode}}</div>
+            </v-col>
+            <v-col md="4">
+              <h3>TO:</h3>
+              <label class="font-weight-bold" for="Businesss Name">Business Name</label>
+              <div>{{clientName}}</div>
+              <label class="font-weight-bold" for="Tax Number">Tax Number</label>
+              <div>{{client_taxnumber}}</div>
+              <label class="font-weight-bold" for="Address Line 1">Address Line 1</label>
+              <div>{{client_address1}}</div>
+              <label class="font-weight-bold" for="Address Line 2">Address Line 2</label>
+              <div>{{client_address2}}</div>
+              <label class="font-weight-bold" for="City">City</label>
+              <div>{{client_city}}</div>
+              <label class="font-weight-bold" for="Postcode">PostCode</label>
+              <div>{{client_postcode}}</div>
+            </v-col>
+            <v-col md="4">
+              <h3>Details:</h3>
+              <label class="font-weight-bold" for="Invoice Number">Invoice Number</label>
+              <div>{{invoice_id}}</div>
+              <label class="font-weight-bold" for="Issue Date">Issue Date</label>
+              <div>{{invoice_date}}</div>
+              <label class="font-weight-bold" for="Issue Date">Purchase Order</label>
+              <div>{{purchase_order}}</div>
+              <label class="font-weight-bold" for="Issue Date">Due Date</label>
+              <div>{{invoice_due}}</div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col md="12">
+              <h3>Items:</h3>
+              <v-simple-table>
+                <thead>
+                  <tr>
+                    <th class="text-left">No.</th>
+                    <th class="text-left">Desciption</th>
+                    <th class="text-left">Qty</th>
+                    <th class="text-left">Price</th>
+                    <th class="text-left">Discount</th>
+                    <th class="text-left">Tax</th>
+                    <th class="text-left">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in items" :key="index">
+                    <td>{{ index +1 }}</td>
+                    <td>{{item.description}}</td>
+                    <td>{{item.qty}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.discount_amount}}</td>
+                    <td>{{item.tax_amount}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <tr>
+                    <td>Discount:</td>
+                  </tr>
+                  <tr>
+                    <td>Tax:</td>
+                  </tr>
+                  <tr>
+                    <td>Total:</td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col md="4">
+              <h3>Bank Information:</h3>
+              <label for="Invoice Number">Bank Name</label>
+              <div>{{bank_name}}</div>
+              <label for="Issue Date">Account number</label>
+              <div>{{bank_account}}</div>
+              <label for="Due Date">SWIFT Code</label>
+              <div>{{swift_code}}</div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <label for="Invoice Notes">Invoice Notes</label>
+              <div id="invoice_notes">{{invoice_notes}}</div>
+            </v-col>
+          </v-row>
+        </div>
+      </v-card>
+      <v-btn @click="printWindow()" color="primary">Save PDF</v-btn>
+      <v-btn @click="editInvoice" color="primary">Edit</v-btn>
+    </div>
   </div>
 </template>
 
@@ -390,6 +423,7 @@ export default {
       dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
       menu1: false,
       menu2: false,
+      showPreview: false,
     };
   },
   methods: {
@@ -417,6 +451,18 @@ export default {
       const [month, day, year] = date.split("/");
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
+    printWindow: function () {
+      const element = document.getElementById("invoice_template").innerHTML;
+      document.body.innerHTML = element;
+      window.print();
+      window.location.reload();
+    },
+    preview: function () {
+      this.showPreview = true;
+    },
+    editInvoice: function () {
+      this.showPreview = false;
+    },
   },
   computed: {
     computedDateFormatted() {
@@ -442,5 +488,26 @@ export default {
 }
 #subtitle {
   margin-left: 2rem;
+}
+.button-remove {
+  margin-bottom: 1.5rem;
+}
+.v-btn:not(.v-btn--round).v-size--default {
+  height: 47px;
+  min-width: 64px;
+  padding: 0 16px;
+}
+#invoice_notes {
+  border: 1px solid grey;
+}
+#title_container {
+  display: flex;
+  align-items: center;
+}
+#logo {
+  height: 50px;
+  position: relative;
+  margin-left: -4rem;
+  margin-top: 3.5rem;
 }
 </style>
