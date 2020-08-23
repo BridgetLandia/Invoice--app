@@ -153,7 +153,7 @@
               <label for="Due Date">Due Date</label>
               <v-menu
                 ref="menu2"
-                v-model="invoice_due"
+                v-model="menu2"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 offset-y
@@ -228,7 +228,7 @@
                       label="Solo"
                       placeholder="Total"
                       :value="item.total"
-                      readonly="true"
+                      readonly
                       solo
                     ></v-text-field>
                   </td>
@@ -274,48 +274,70 @@
     </v-card>
     <!-- Invoice Template -->
     <div v-else>
+      <v-navigation-drawer
+        v-model="drawer"
+        :color="color"
+        :expand-on-hover="expandOnHover"
+        :mini-variant="miniVariant"
+        :right="right"
+        :permanent="permanent"
+        absolute
+        dark
+      >
+        <v-list>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>You Invoice</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item @click="printToPDF()" color="primary">Save PDF</v-list-item>
+          <v-list-item @click="editInvoice" color="primary">Edit</v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
       <v-card class="ma-12 pa-16">
         <div id="invoice_template">
           <v-row justify="center">
             <v-col md="4">
               <h3>FROM</h3>
-              <label class="font-weight-bold" for="Businesss Name">Business Name:</label>
+              <label class="labels" for="Businesss Name">Business Name:</label>
               <div>{{businessName}}</div>
-              <label class="font-weight-bold" for="Tax Number">Tax Number:</label>
+              <label class="labels" for="Tax Number">Tax Number:</label>
               <div>{{from_taxnumber}}</div>
-              <label class="font-weight-bold" for="Address Line 1">Address Line 1:</label>
+              <label class="labels" for="Address Line 1">Address Line 1:</label>
               <div>{{from_address1}}</div>
-              <label class="font-weight-bold" for="Address Line 2">Address Line 2:</label>
+              <label class="labels" for="Address Line 2">Address Line 2:</label>
               <div>{{from_address2}}</div>
-              <label class="font-weight-bold" for="City">City:</label>
+              <label class="labels" for="City">City:</label>
               <div>{{from_city}}</div>
-              <label class="font-weight-bold" for="Postcode">PostCode:</label>
+              <label class="labels" for="Postcode">PostCode:</label>
               <div>{{from_postcode}}</div>
             </v-col>
             <v-col md="4">
               <h3>TO:</h3>
-              <label class="font-weight-bold" for="Businesss Name">Business Name</label>
+              <label class="labels" for="Businesss Name">Business Name</label>
               <div>{{clientName}}</div>
-              <label class="font-weight-bold" for="Tax Number">Tax Number</label>
+              <label class="labels" for="Tax Number">Tax Number</label>
               <div>{{client_taxnumber}}</div>
-              <label class="font-weight-bold" for="Address Line 1">Address Line 1</label>
+              <label class="labels" for="Address Line 1">Address Line 1</label>
               <div>{{client_address1}}</div>
-              <label class="font-weight-bold" for="Address Line 2">Address Line 2</label>
+              <label class="labels" for="Address Line 2">Address Line 2</label>
               <div>{{client_address2}}</div>
-              <label class="font-weight-bold" for="City">City</label>
+              <label class="labels" for="City">City</label>
               <div>{{client_city}}</div>
-              <label class="font-weight-bold" for="Postcode">PostCode</label>
+              <label class="labels" for="Postcode">PostCode</label>
               <div>{{client_postcode}}</div>
             </v-col>
             <v-col md="4">
               <h3>Details:</h3>
-              <label class="font-weight-bold" for="Invoice Number">Invoice Number</label>
+              <label class="labels" for="Invoice Number">Invoice Number</label>
               <div>{{invoice_id}}</div>
-              <label class="font-weight-bold" for="Issue Date">Issue Date</label>
+              <label class="labels" for="Issue Date">Issue Date</label>
               <div>{{invoice_date}}</div>
-              <label class="font-weight-bold" for="Issue Date">Purchase Order</label>
+              <label class="labels" for="Issue Date">Purchase Order</label>
               <div>{{purchase_order}}</div>
-              <label class="font-weight-bold" for="Issue Date">Due Date</label>
+              <label class="labels" for="Issue Date">Due Date</label>
               <div>{{invoice_due}}</div>
             </v-col>
           </v-row>
@@ -376,13 +398,12 @@
           </v-row>
         </div>
       </v-card>
-      <v-btn @click="printWindow()" color="primary">Save PDF</v-btn>
-      <v-btn @click="editInvoice" color="primary">Edit</v-btn>
     </div>
   </div>
 </template>
 
 <script>
+import html2pdf from "html2pdf.js";
 export default {
   name: "invoice",
   data() {
@@ -424,6 +445,14 @@ export default {
       menu1: false,
       menu2: false,
       showPreview: false,
+      drawer: true,
+      color: "blue",
+      colors: ["primary", "blue", "success", "red", "teal"],
+      right: true,
+      permanent: true,
+      miniVariant: false,
+      expandOnHover: true,
+      background: false,
     };
   },
   methods: {
@@ -457,8 +486,19 @@ export default {
       window.print();
       window.location.reload();
     },
+    printToPDF: function () {
+      const element = document.getElementById("invoice_template");
+      const opt = {
+        margin: 10,
+        filename: "invoice.pdf",
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: { scale: 2, scrollX: 0, scrollY: 0 },
+      };
+      html2pdf().from(element).set(opt).save();
+    },
     preview: function () {
       this.showPreview = true;
+      window.scroll(0, 0);
     },
     editInvoice: function () {
       this.showPreview = false;
@@ -472,6 +512,7 @@ export default {
   watch: {
     date() {
       this.dateFormatted = this.formatDate(this.date);
+      this.invoice_date = this.date;
     },
   },
 };
@@ -509,5 +550,8 @@ export default {
   position: relative;
   margin-left: -4rem;
   margin-top: 3.5rem;
+}
+.labels {
+  font-weight: 700;
 }
 </style>
