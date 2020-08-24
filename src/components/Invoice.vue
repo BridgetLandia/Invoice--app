@@ -124,10 +124,12 @@
                 placeholder="Invoice Number"
                 solo
               ></v-text-field>
+              <label for="Issue Date">Purchase Order Number</label>
+              <v-text-field label="Solo" v-model.trim="purchase_order" placeholder="PO Number" solo></v-text-field>
               <label for="Issue Date">Issue Date</label>
               <v-menu
-                ref="menu1"
-                v-model="menu1"
+                ref="menu"
+                v-model="menu"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 offset-y
@@ -146,10 +148,8 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                <v-date-picker v-model="date" no-title @input="menu = false"></v-date-picker>
               </v-menu>
-              <label for="Issue Date">Purchase Order Number</label>
-              <v-text-field label="Solo" v-model.trim="purchase_order" placeholder="PO Number" solo></v-text-field>
               <label for="Due Date">Due Date</label>
               <v-menu
                 ref="menu2"
@@ -158,7 +158,7 @@
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
-                min-width="200px"
+                min-width="290px"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
@@ -287,12 +287,28 @@
         <v-list>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>You Invoice</v-list-item-title>
+              <v-list-item-title>Your Invoice</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item @click="printToPDF()" color="primary">Save PDF</v-list-item>
-          <v-list-item @click="editInvoice" color="primary">Edit</v-list-item>
+          <v-list-item-icon>
+            <v-list-item @click="printWindow()" color="primary">
+              <v-icon>{{ 'mdi-cloud-print-outline' }}</v-icon>
+              <v-list-item-content>Print to PDF</v-list-item-content>
+            </v-list-item>
+          </v-list-item-icon>
+          <v-list-item-icon>
+            <v-list-item @click="printToPDF()" color="primary">
+              <v-icon>{{ 'mdi-content-save-all' }}</v-icon>
+              <v-list-item-content>Save PDF</v-list-item-content>
+            </v-list-item>
+          </v-list-item-icon>
+          <v-list-item-icon>
+            <v-icon>{{ 'mdi-square-edit-outline' }}</v-icon>
+            <v-list-item @click="editInvoice" color="primary">
+              <v-list-item-content>Edit</v-list-item-content>
+            </v-list-item>
+          </v-list-item-icon>
         </v-list>
       </v-navigation-drawer>
 
@@ -333,10 +349,10 @@
               <h3>Details:</h3>
               <label class="labels" for="Invoice Number">Invoice Number</label>
               <div>{{invoice_id}}</div>
-              <label class="labels" for="Issue Date">Issue Date</label>
-              <div>{{invoice_date}}</div>
               <label class="labels" for="Issue Date">Purchase Order</label>
               <div>{{purchase_order}}</div>
+              <label class="labels" for="Issue Date">Issue Date</label>
+              <div>{{invoice_date}}</div>
               <label class="labels" for="Issue Date">Due Date</label>
               <div>{{invoice_due}}</div>
             </v-col>
@@ -442,7 +458,7 @@ export default {
       invoice_notes: "",
       date: new Date().toISOString().substr(0, 10),
       dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
-      menu1: false,
+      menu: false,
       menu2: false,
       showPreview: false,
       drawer: true,
