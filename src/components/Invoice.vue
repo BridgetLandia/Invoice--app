@@ -2,7 +2,6 @@
   <v-card v-if="!showPreview" color="#f5eee8">
     <div id="title_container">
       <h1 id="main_title">Invoice App</h1>
-      <img alt="logo" id="logo" src="../assets/teabag.svg" />
     </div>
     <h3 id="subtitle">InvoiceTea for your Invoice Team</h3>
 
@@ -115,8 +114,9 @@
             <label for="Issue Date">Purchase Order Number</label>
             <v-text-field label="Solo" v-model.trim="purchase_order" placeholder="PO Number" solo></v-text-field>
             <label for="Issue Date">Issue Date</label>
-
+            <datepicker class="datepicker" v-model="invoice_date"></datepicker>
             <label for="Due Date">Due Date</label>
+            <datepicker class="datepicker" v-model="invoice_due"></datepicker>
           </v-col>
         </v-row>
         <v-row>
@@ -372,7 +372,9 @@
                   <td>{{item.qty}}</td>
                   <td>{{item.price}}</td>
                   <td>{{item.discount}}</td>
+                  <td>{{item.discount_amount}}</td>
                   <td>{{item.tax}}</td>
+                  <td>{{item.tax_amount}}</td>
                   <td>{{item.total}}</td>
                 </tr>
                 <tr>
@@ -414,8 +416,12 @@
 </template>
 
 <script>
+import Datepicker from "vuejs-datepicker";
 import html2pdf from "html2pdf.js";
 export default {
+  components: {
+    Datepicker,
+  },
   name: "invoice",
   data() {
     return {
@@ -481,7 +487,7 @@ export default {
       });
     },
     removeItem(index) {
-      this.items.splice(index, 1);
+      if (index > 0) this.items.splice(index, 1);
     },
     itemTotal(index) {
       let itemDiscounted;
@@ -507,6 +513,7 @@ export default {
       // If tax applied.
       if (this.items[index].tax) {
         taxTotal = calculatedTotal * (this.items[index].tax / 100);
+        this.items[index].tax_amount = taxTotal;
         this.items[index].total = taxTotal + calculatedTotal;
       } else if (this.items[index].tax === 0 || this.items[index].tax === "") {
         this.items[index].tax_amount = 0;
@@ -558,7 +565,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 #main_title {
   padding: 2rem;
 }
@@ -622,5 +629,15 @@ td {
 }
 .pdf-icon {
   margin-right: 1rem;
+}
+button,
+input,
+select,
+textarea {
+  background-color: transparent;
+  border-style: border solid 1px;
+}
+.datepicker input {
+  border-bottom: grey 2px solid;
 }
 </style>

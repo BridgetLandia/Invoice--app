@@ -11,6 +11,8 @@
     "core-js": "^3.6.5",
     "html2pdf.js": "^0.9.2",
     "vue": "^2.6.11",
+    "vue-dayjs-plugin": "^1.0.0",
+    "vuejs-datepicker": "^1.6.2",
     "vuetify": "^2.2.11"
   },
   "devDependencies": {
